@@ -13,53 +13,43 @@ for (int i = 0; i < lines.Length; i++)
 	char direction = instruction[0];
 
 	int rotation = int.Parse(instruction[1..]);
-	// flatten rotation to within 0 - 99 range of the dial
-	while (rotation > 100)
-	{
-		rotation -= 100;
-	}
+
 	Console.WriteLine($"Instruction: {instruction}\nCurrent Dial Position: {currentDialPosition}");
 
-	// apply the rotation to the current
+	int overflow = 0;
 	switch (direction)
 	{
 		case
 			'L':
-			currentDialPosition -= rotation;
-
+			overflow = -1;
 			break;
 
 		case 'R':
-			currentDialPosition += rotation;
+			overflow = 1;
 			break;
 	}
 
-	if (currentDialPosition == 100)
+	for (int click = 0; click < rotation; click++)
 	{
-		currentDialPosition = 0;
-	}
+		currentDialPosition += overflow;
 
-	// flatten currentDialPosition to within 0 - 99 range of the dial
-	while (currentDialPosition > 100)
-	{
-		currentDialPosition -= 100;
-	}
+		if (currentDialPosition == 100)
+		{
+			currentDialPosition = 0;
+		}
+		else if (currentDialPosition == -1)
+		{
+			currentDialPosition = 99;
+		}
 
-	while (currentDialPosition <= -1)
-	{
-		currentDialPosition = 100 + currentDialPosition;
+		if (currentDialPosition == 0)
+		{
+			passwordCount++;
+		}
 	}
 
 	Console.WriteLine($"Current Dial Position after rotation {currentDialPosition}");
-
-	if (currentDialPosition == 0)
-	{
-		currentDialPosition = 0;
-		passwordCount++;
-	}
-
 	Console.WriteLine($"Password count: {passwordCount}");
-
 	Console.WriteLine("");
 }
 
