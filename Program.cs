@@ -17,7 +17,6 @@ for (int i = 0; i < lines.Length; i++)
 	while (rotation > 100)
 	{
 		rotation -= 100;
-		passwordCount++;
 	}
 	Console.WriteLine($"Instruction: {instruction}\nCurrent Dial Position: {currentDialPosition}");
 
@@ -46,7 +45,7 @@ for (int i = 0; i < lines.Length; i++)
 		currentDialPosition -= 100;
 	}
 
-	while (currentDialPosition < -1)
+	while (currentDialPosition <= -1)
 	{
 		currentDialPosition = 100 + currentDialPosition;
 	}
