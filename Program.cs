@@ -1,57 +1,43 @@
 ﻿// load the file from disk
-string filePath = $@"{AppContext.BaseDirectory}\DayOneInput.txt";
+string filePath = $@"{AppContext.BaseDirectory}\DayTwo\DayTwoInput.txt";
 
-string[] lines = File.ReadAllLines(filePath);
+string content = File.ReadAllText(filePath);
 
-int passwordCount = 0;
-int currentDialPosition = 50;
+string[] productIds = content.Split(',');
 
-for (int i = 0; i < lines.Length; i++)
+long currentRange = 0;
+long invalidProductIdCount = 0;
+
+string[][] ranges = [.. productIds
+	.Select(id => id.Split('-'))
+	.Select(parts => new string[] { parts[0], parts[1] })];
+
+//loop to go through the whole 2D array
+for (int i = 0; i < ranges.Length; i++)
 {
-	string instruction = lines[i];
-
-	char direction = instruction[0];
-
-	int rotation = int.Parse(instruction[1..]);
-
-	Console.WriteLine($"Instruction: {instruction}\nCurrent Dial Position: {currentDialPosition}");
-
-	int overflow = 0;
-	switch (direction)
+	currentRange = long.Parse(ranges[i][0]);
+	// starting at the first value in the first dimension of the array, count sequentially up to the value in the second dimension of the array
+	for (long j = long.Parse(ranges[i][0]); j <= long.Parse(ranges[i][1]); j++)
 	{
-		case
-			'L':
-			overflow = -1;
-			break;
+		// check if the current value is invalid
+		if (currentRange.ToString().Length % 2 == 0)
+		{
+			int length = currentRange.ToString().Length;
+			int halfLength = length / 2;
 
-		case 'R':
-			overflow = 1;
-			break;
+			string firstHalf = currentRange.ToString().Substring(0, halfLength);
+			string secondHalf = currentRange.ToString().Substring(halfLength, halfLength);
+
+			if (firstHalf == secondHalf)
+			{
+				Console.WriteLine($"Found invalid id {firstHalf}{secondHalf}");
+				invalidProductIdCount += currentRange;
+			}
+		}
+		currentRange++;
 	}
-
-	for (int click = 0; click < rotation; click++)
-	{
-		currentDialPosition += overflow;
-
-		if (currentDialPosition == 100)
-		{
-			currentDialPosition = 0;
-		}
-		else if (currentDialPosition == -1)
-		{
-			currentDialPosition = 99;
-		}
-
-		if (currentDialPosition == 0)
-		{
-			passwordCount++;
-		}
-	}
-
-	Console.WriteLine($"Current Dial Position after rotation {currentDialPosition}");
-	Console.WriteLine($"Password count: {passwordCount}");
-	Console.WriteLine("");
 }
 
-Console.WriteLine(passwordCount);
+Console.WriteLine($"Invalid Product Count total: {invalidProductIdCount}");
+
 Console.ReadLine();
