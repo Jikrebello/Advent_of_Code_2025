@@ -15,24 +15,43 @@ string[][] ranges = [.. productIds
 //loop to go through the whole 2D array
 for (int i = 0; i < ranges.Length; i++)
 {
-	currentRange = long.Parse(ranges[i][0]);
 	// starting at the first value in the first dimension of the array, count sequentially up to the value in the second dimension of the array
+	currentRange = long.Parse(ranges[i][0]);
 	for (long j = long.Parse(ranges[i][0]); j <= long.Parse(ranges[i][1]); j++)
 	{
-		// check if the current value is invalid
+		// check one: logic that focuses on if there is an even number of digits
 		if (currentRange.ToString().Length % 2 == 0)
 		{
 			int length = currentRange.ToString().Length;
 			int halfLength = length / 2;
 
-			string firstHalf = currentRange.ToString().Substring(0, halfLength);
-			string secondHalf = currentRange.ToString().Substring(halfLength, halfLength);
+			string firstHalf = currentRange.ToString()[..halfLength];
+			string secondHalf = currentRange.ToString()[halfLength..];
 
 			if (firstHalf == secondHalf)
 			{
-				Console.WriteLine($"Found invalid id {firstHalf}{secondHalf}");
+				Console.WriteLine($"Found invalid id {currentRange}");
 				invalidProductIdCount += currentRange;
 			}
+			else if (firstHalf.Length > 2 && secondHalf.Length > 2)
+			{
+				string evenFirstHalf = firstHalf + secondHalf[0];
+				string evenSecondHalf = secondHalf + firstHalf[0];
+
+				string reverseEvenFirstHalf = new(evenFirstHalf.Reverse().ToArray());
+
+				if (reverseEvenFirstHalf == evenSecondHalf)
+				{
+					Console.WriteLine($"Found invalid id {currentRange}");
+					invalidProductIdCount += currentRange;
+				}
+			}
+		}
+
+		// check two: logic that focuses on if there is an odd number of digits
+		else
+		{
+			// eg) we have 123123123
 		}
 		currentRange++;
 	}
