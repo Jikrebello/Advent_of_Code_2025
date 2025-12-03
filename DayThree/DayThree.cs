@@ -10,32 +10,33 @@
 
 			int totalJoltageOutput = 0;
 
-			for (int row = 0; row < lines.Length; row++)
+			for (int i = 0; i < lines.Length; i++)
 			{
-				string line = lines[row].Trim();
+				string line = lines[i].Trim();
 
-				int maxValid = 0;
+				int maxPair = 0;
+				int bestRightDigit = -1;
 
-				for (int i = 0; i < line.Length; i++)
+				//right to left
+				for (int j = line.Length - 1; j >= 0; j--)
 				{
-					int first = int.Parse(line[i].ToString());
+					int current = int.Parse(line[j].ToString());
 
-					for (int j = i + 1; j < line.Length; j++)
+					if (bestRightDigit != -1)
 					{
-						int second = int.Parse(line[j].ToString());
-
-						int value = first * 10 + second;
-
-						if (value > maxValid)
-						{
-							maxValid = value;
-						}
+						int value = current * 10 + bestRightDigit;
+						if (value > maxPair)
+							maxPair = value;
 					}
+
+					// update the highest digit to the right
+					if (current > bestRightDigit)
+						bestRightDigit = current;
 				}
 
-				Console.WriteLine($"Max Joltage for bank in row {row + 1}: {maxValid}");
+				Console.WriteLine($"Max Joltage for bank in row {i + 1}: {maxPair}");
 
-				totalJoltageOutput += maxValid;
+				totalJoltageOutput += maxPair;
 			}
 
 			Console.WriteLine($"Total Joltage: {totalJoltageOutput}");
