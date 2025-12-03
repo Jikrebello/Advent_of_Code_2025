@@ -18,7 +18,7 @@
 
 				char direction = instruction[0];
 
-				int rotation = int.Parse(instruction[1..]);
+				int rotation = Convert.ToInt32(instruction[1..]);
 
 				Console.WriteLine($"Instruction: {instruction}\nCurrent Dial Position: {currentDialPosition}");
 
